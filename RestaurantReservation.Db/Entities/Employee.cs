@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RestaurantReservation.Db.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantReservation.Db.Entities;
 
@@ -15,7 +16,7 @@ public class Employee
     [Required]
     public string Lastname { get; set; }
     [Required]
-    public string Position { get; set; }
+    public Position Position { get; set; }
 
     public Restaurant Restaurant { get; set; }
     [Required]
