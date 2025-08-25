@@ -16,7 +16,6 @@ public class MenuItem
     public string Description { get; set; }
     [Required]
     public decimal Price { get; set; }
-
     public Restaurant Restaurant { get; set; }
     [Required]
     public int RestaurantId { get; set; }

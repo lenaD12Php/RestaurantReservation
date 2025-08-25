@@ -14,7 +14,6 @@ public class Reservation
     public DateTime ReservationDate { get; set; }
     [Required]
     public int PartySize { get; set; }
-
     public Restaurant Restaurant { get; set; }
     [Required]
     public int RestaurantId { get; set; }
@@ -24,6 +23,5 @@ public class Reservation
     public Table Table { get; set; }
     [Required]
     public int TableId { get; set; }
-
     public List<Order> orders { get; set; }
 }

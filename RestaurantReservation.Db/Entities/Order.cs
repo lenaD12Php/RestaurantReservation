@@ -14,7 +14,6 @@ public class Order
     public DateTime OrderDate { get; set; }
     [Required]
     public decimal TotalAmount { get; set; }
-
     public Reservation Reservation { get; set; }
     [Required]
     public int ReservationId { get; set; }

@@ -22,5 +22,4 @@ public class Employee
     [Required]
     public int RestaurantId { get; set; }
     public List<Order> Orders { get; set; }
-
 }

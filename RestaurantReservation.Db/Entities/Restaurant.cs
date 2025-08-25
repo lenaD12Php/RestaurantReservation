@@ -21,7 +21,6 @@ public class Restaurant
     [Phone]
     public string PhoneNumber { get; set; }
     public string OpeningHours { get; set; }
-
     public List<Table> Tables { get; set; }
     public List<Reservation> Reservations { get; set; }
     public List<Employee> Employees { get; set; }
