@@ -15,7 +15,7 @@ public class Customer
     [Required]
     public string Lastname { get; set; }
     [EmailAddress]
-    public string Email { get; set; }
+    public string? Email { get; set; }
     [Required]
     [Phone]
     public string PhoneNumber { get; set; }
