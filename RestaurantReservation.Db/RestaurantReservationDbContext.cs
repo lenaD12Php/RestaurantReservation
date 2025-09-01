@@ -9,10 +9,16 @@ public class RestaurantReservationDbContext : DbContext
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Employee> Employees { get; set; }
     public DbSet<MenuItem> MenuItems { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
     public DbSet<Restaurant> Restaurants { get; set; }
     public DbSet<Table> Tables { get; set; }
+
+    public RestaurantReservationDbContext() { }
+    public RestaurantReservationDbContext(DbContextOptions<RestaurantReservationDbContext> options): base(options)
+    {
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -20,121 +26,87 @@ public class RestaurantReservationDbContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<MenuItem>().
-           HasMany(mi => mi.Orders)
-           .WithMany(o => o.MenuItems)
-           .UsingEntity<OrderItem>(
-           join => join.HasOne<Order>()
-           .WithMany()
-           .HasForeignKey(oi => oi.OrderId),
-           join => join.HasOne<MenuItem>()
-           .WithMany()
-           .HasForeignKey(oi => oi.MenuItemId));
-        modelBuilder.Entity<OrderItem>()
-          .Property(oi => oi.Quantity).HasDefaultValueSql("0");
-        modelBuilder.Entity<OrderItem>()
-            .Property(oi => oi.OrderId).HasColumnName("order_id");
-        modelBuilder.Entity<OrderItem>()
-          .Property(oi => oi.MenuItemId).HasColumnName("item_id");
+        modelBuilder.Entity<OrderItem>(oi =>
+        {
+            oi.ToTable("OrderItems");
+            oi.HasKey(x => x.OrderItemId);
 
-        modelBuilder.Entity<OrderItem>()
-            .Property(oi => oi.OrderItemId)
-            .HasColumnName("order_item_id");
-        modelBuilder.Entity<OrderItem>()
-            .Property(oi => oi.MenuItemId)
-            .HasColumnName("item_id");
-        modelBuilder.Entity<OrderItem>()
-            .Property(oi => oi.OrderId)
-            .HasColumnName("order_id");
+            oi.HasIndex(oi => new { oi.OrderId, oi.MenuItemId }).IsUnique();
 
-        modelBuilder.Entity<Customer>()
-          .Property(c => c.CustomerId)
-          .HasColumnName("customer_id");
-        modelBuilder.Entity<Customer>()
-           .Property(c => c.Firstname)
-           .HasColumnName("first_name");
-        modelBuilder.Entity<Customer>()
-       .Property(c => c.Lastname)
-       .HasColumnName("last_name");
-        modelBuilder.Entity<Customer>()
-       .Property(c => c.PhoneNumber)
-       .HasColumnName("phone_number");
+            oi.Property(oi => oi.OrderItemId).HasColumnName("order_item_id");
+            oi.Property(oi => oi.OrderId).HasColumnName("order_id");
+            oi.Property(oi => oi.MenuItemId).HasColumnName("item_id");
+            oi.Property(oi => oi.Quantity).HasDefaultValue(0);
 
-        modelBuilder.Entity<Reservation>()
-            .Property(r => r.ReservationId)
-            .HasColumnName("reservation_id");
-        modelBuilder.Entity<Reservation>()
-           .Property(r => r.ReservationDate)
-           .HasColumnName("reservation_date");
-        modelBuilder.Entity<Reservation>()
-           .Property(r => r.PartySize)
-           .HasColumnName("party_size");
-        modelBuilder.Entity<Reservation>()
-           .Property(r => r.CustomerId)
-           .HasColumnName("customer_id");
-        modelBuilder.Entity<Reservation>()
-           .Property(r => r.RestaurantId)
-           .HasColumnName("restaurant_id");
-        modelBuilder.Entity<Reservation>()
-           .Property(r => r.TableId)
-           .HasColumnName("table_id");
+            oi.HasOne(oi => oi.Order)
+              .WithMany(o => o.OrderItems)
+              .HasForeignKey(oi => oi.OrderId)
+              .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Order>()
-           .Property(o => o.OrderId)
-           .HasColumnName("order_id");
-        modelBuilder.Entity<Order>()
-        .Property(o => o.ReservationId)
-        .HasColumnName("reservation_id");
-        modelBuilder.Entity<Order>()
-        .Property(o => o.EmployeeId)
-        .HasColumnName("employee_id");
-        modelBuilder.Entity<Order>()
-        .Property(o => o.OrderDate)
-        .HasColumnName("order_date");
-        modelBuilder.Entity<Order>()
-        .Property(o => o.TotalAmount)
-        .HasColumnName("total_amount");
+            oi.HasOne(oi => oi.MenuItem)
+              .WithMany(mi => mi.OrderItems)
+              .HasForeignKey(oi => oi.MenuItemId)
+              .OnDelete(DeleteBehavior.Restrict);
+        });
 
-        modelBuilder.Entity<Employee>()
-            .Property(e => e.EmployeeId)
-            .HasColumnName("employee_id");
-        modelBuilder.Entity<Employee>()
-          .Property(e => e.RestaurantId)
-          .HasColumnName("restaurant_id");
-        modelBuilder.Entity<Employee>()
-          .Property(e => e.Firstname)
-          .HasColumnName("first_name");
-        modelBuilder.Entity<Employee>()
-          .Property(e => e.Lastname)
-          .HasColumnName("last_name");
-        modelBuilder.Entity<Employee>()
-            .Property(e => e.Position)
-            .HasConversion<string>();
 
-        modelBuilder.Entity<MenuItem>()
-            .Property(mi => mi.MenuItemId)
-            .HasColumnName("item_id");
-        modelBuilder.Entity<MenuItem>()
-          .Property(mi => mi.RestaurantId)
-          .HasColumnName("restaurant_id");
+        modelBuilder.Entity<Customer>(c =>
+        {
+            c.Property(c => c.CustomerId).HasColumnName("customer_id");
+            c.Property(c => c.Firstname).HasColumnName("first_name");
+            c.Property(c => c.Lastname).HasColumnName("last_name");
+            c.Property(c => c.PhoneNumber).HasColumnName("phone_number");
 
-        modelBuilder.Entity<Table>()
-            .Property(t => t.TableId)
-            .HasColumnName("table_id");
-        modelBuilder.Entity<Table>()
-           .Property(t => t.RestaurantId)
-           .HasColumnName("restaurant_id");
+            c.HasIndex(c => c.Email).IsUnique(true);
+        });
 
-        modelBuilder.Entity<Restaurant>()
-            .Property(r => r.RestaurantId)
-            .HasColumnName("restaurant_id");
-        modelBuilder.Entity<Restaurant>()
-          .Property(r => r.PhoneNumber)
-          .HasColumnName("phone_number");
-        modelBuilder.Entity<Restaurant>()
-          .Property(r => r.OpeningHours)
-          .HasColumnName("opening_hours");
+        modelBuilder.Entity<Reservation>(r =>
+        { 
+            r.Property(r => r.ReservationId).HasColumnName("reservation_id");
+            r.Property(r => r.ReservationDate).HasColumnName("reservation_date");
+            r.Property(r => r.PartySize).HasColumnName("party_size");
+            r.Property(r => r.CustomerId).HasColumnName("customer_id");
+            r.Property(r => r.RestaurantId).HasColumnName("restaurant_id");
+            r.Property(r => r.TableId).HasColumnName("table_id");
+        });
 
+        modelBuilder.Entity<Order>(o =>
+        {
+            o.Property(o => o.OrderId).HasColumnName("order_id");
+            o.Property(o => o.ReservationId).HasColumnName("reservation_id");
+            o.Property(o => o.EmployeeId).HasColumnName("employee_id");
+            o.Property(o => o.OrderDate).HasColumnName("order_date");
+            o.Property(o => o.TotalAmount).HasColumnName("total_amount");
+        });
+
+        modelBuilder.Entity<Employee>(e =>
+        {
+            e.Property(e => e.EmployeeId).HasColumnName("employee_id");
+            e.Property(e => e.RestaurantId).HasColumnName("restaurant_id");
+            e.Property(e => e.Firstname).HasColumnName("first_name");
+            e.Property(e => e.Lastname).HasColumnName("last_name");
+            e.Property(e => e.Position).HasConversion<string>();
+        });
+
+        modelBuilder.Entity<MenuItem>(mi =>
+        {
+            mi.Property(mi => mi.MenuItemId).HasColumnName("item_id");
+            mi.Property(mi => mi.RestaurantId).HasColumnName("restaurant_id");
+        });
+
+        modelBuilder.Entity<Table>(t =>
+        {
+            t.Property(t => t.TableId).HasColumnName("table_id");
+            t.Property(t => t.RestaurantId).HasColumnName("restaurant_id");
+        });
+
+        modelBuilder.Entity<Restaurant>(r =>
+        {
+            r.Property(r => r.RestaurantId).HasColumnName("restaurant_id");
+            r.Property(r => r.PhoneNumber).HasColumnName("phone_number");
+            r.Property(r => r.OpeningHours).HasColumnName("opening_hours");
+        });
+           
         var customers = new List<Customer>()
         {
             new Customer
