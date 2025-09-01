@@ -15,7 +15,7 @@ public class ReservationConsoleUI
             Console.WriteLine("\n1) Add Reservation  \n2) Update ReservationDate  " +
                 "\n3) Update PartySize  \n4) Update Restaurant  \n5) Update Customer  " +
                 "\n6) Update Table  \n7) Delete Reservation  \n8) Get Reservation  " +
-                "\n9) Get Reservations  \n0) Exit");
+                "\n9) Get Reservations  \n10) Get ReservationsByCustomer  \n0) Exit");
             var input = Console.ReadLine();
             switch (input)
             {
@@ -45,6 +45,9 @@ public class ReservationConsoleUI
                     break;
                 case "9":
                     await GetReservationsUI();
+                    break;
+                case "10":
+                    await GetReservationsByCustomerUI();
                     break;
                 case "0":
                     return;
@@ -226,6 +229,22 @@ public class ReservationConsoleUI
             Console.WriteLine($"ReservationId: {reservation.ReservationId},\n   ReservationDate: {reservation.ReservationDate}," +
             $"\n    PartySize: {reservation.PartySize},\n    RestaurantId: {reservation.RestaurantId}, " +
             $"\n    CustomerId: {reservation.CustomerId},\n    TableId: {reservation.TableId}");
+            reservation.orders.ForEach(o => Console.WriteLine($"    OrderId: {o.OrderId}," +
+                $"\n OrderDate: {o.OrderDate},\n    TotalAmount: {o.TotalAmount}," +
+                $"\n    ReservationId: {o.ReservationId},\n    EmployeeId: {o.EmployeeId}"));
+        }
+    }
+
+    public async Task GetReservationsByCustomerUI()
+    {
+        var customerId = ReadCustomerIdOrFail();
+
+        var reservations = await _service.GetReservationsByCustomerAsync(customerId);
+        foreach (var reservation in reservations)
+        {
+            Console.WriteLine($"CustomerId: {reservation.CustomerId},\n    ReservationId: {reservation.ReservationId}," +
+                $"\n   ReservationDate: {reservation.ReservationDate},\n    PartySize: {reservation.PartySize}," +
+                $"\n    RestaurantId: {reservation.RestaurantId},\n    TableId: {reservation.TableId}");
             reservation.orders.ForEach(o => Console.WriteLine($"    OrderId: {o.OrderId}," +
                 $"\n OrderDate: {o.OrderDate},\n    TotalAmount: {o.TotalAmount}," +
                 $"\n    ReservationId: {o.ReservationId},\n    EmployeeId: {o.EmployeeId}"));
