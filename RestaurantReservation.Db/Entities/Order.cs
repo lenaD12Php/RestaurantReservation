@@ -6,7 +6,7 @@ public class Order
 {
     public Order()
     {
-        MenuItems = new List<MenuItem>();
+        OrderItems = new List<OrderItem>();
     }
 
     public int OrderId { get; set; }
@@ -20,5 +20,5 @@ public class Order
     public Employee Employee { get; set; }
     [Required]
     public int EmployeeId { get; set; }
-    public List<MenuItem> MenuItems { get; set; }
+    public List<OrderItem> OrderItems { get; set; }
 }

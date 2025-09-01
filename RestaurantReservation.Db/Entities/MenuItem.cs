@@ -6,7 +6,7 @@ public class MenuItem
 {
     public MenuItem()
     {
-        Orders = new List<Order>();
+        OrderItems = new List<OrderItem>();
     }
 
     public int MenuItemId { get; set; }
@@ -19,5 +19,5 @@ public class MenuItem
     public Restaurant Restaurant { get; set; }
     [Required]
     public int RestaurantId { get; set; }
-    public List<Order> Orders { get; set; }
+    public List<OrderItem> OrderItems { get; set; }
 }
