@@ -47,4 +47,9 @@ public class EmployeeRepository : IEmployeeRepository
         _context.Entry(employee).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }
+
+    public async Task<List<Employee>> ListManagersAsync()
+    {
+        return await _context.Employees.AsNoTracking().Where(e => e.Position == Position.Manager).ToListAsync();
+    }
 }
