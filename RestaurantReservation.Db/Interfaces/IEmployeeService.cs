@@ -12,5 +12,6 @@ public interface IEmployeeService
     Task UpdateEmployeeRestaurantAsync(int employeeId, int restaurantId);
     Task<Employee> GetEmployeeByIdAsync(int employeeId);
     Task<List<Employee>> GetEmployeesAsync();
+    Task<List<Employee>> GetManagersAsync();
     Task DeleteEmployeeAsync(int employeeId);
 }
