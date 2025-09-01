@@ -14,7 +14,7 @@ public class EmployeeConsoleUI
         {
             Console.WriteLine("\n1) Add Employee  \n2) Update FirstName  \n3) Update LastName  #" +
                 "\n4) Update Position  \n5) Update Restaurant  \n6) Delete Employee  " +
-                "\n7) Get Employee  \n8) Get Employees  \n0) Exit");
+                "\n7) Get Employee  \n8) Get Employees  \n9) Get Managers  \n0) Exit");
             var input = Console.ReadLine();
             switch (input)
             {
@@ -41,6 +41,9 @@ public class EmployeeConsoleUI
                     break;
                 case "8": 
                     await GetEmployeesUI(); 
+                    break;
+                case "9":
+                    await GetManagersUI();
                     break;
                 case "0": 
                     return;
@@ -195,6 +198,16 @@ public class EmployeeConsoleUI
             Console.WriteLine($"Employee Id: {employee.EmployeeId},\n   FirstName: {employee.Firstname}," +
             $"\n    LastName: {employee.Lastname},\n    Position: {employee.Position}, " +
             $"\n    RestaurantId: {employee.RestaurantId}");
+        }
+    }
+
+    public async Task GetManagersUI()
+    {
+        var managers = await _service.GetManagersAsync();
+        foreach (var manager in managers)
+        {
+            Console.WriteLine($"Employee Id: {manager.EmployeeId},\n   Name: {manager.Firstname} {manager.Lastname}," +
+                $"\n    RestaurantId: {manager.RestaurantId}");
         }
     }
 }
