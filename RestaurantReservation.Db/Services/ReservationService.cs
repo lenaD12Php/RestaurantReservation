@@ -39,6 +39,11 @@ public class ReservationService : IReservationService
         return await _repository.GetReservationsAsync();
     }
 
+    public async Task<List<Reservation>> GetReservationsByCustomerAsync(int customerId)
+    {
+        return await _repository.GetReservationsByCustomerAsync(customerId);
+    }
+
     public async Task UpdateReservationCustomerAsync(int reservationId, int customerId)
     {
         var reservation = await _repository.GetReservationByIdAsync(reservationId);
