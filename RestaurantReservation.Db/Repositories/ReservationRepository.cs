@@ -35,6 +35,11 @@ public class ReservationRepository : IReservationRepository
         return await _context.Reservations.AsNoTracking().Include(r => r.orders).ToListAsync();
     }
 
+    public async Task<List<Reservation>> GetReservationsByCustomerAsync(int customerId)
+    {
+        return await _context.Reservations.AsNoTracking().Where(r => r.CustomerId == customerId).ToListAsync();
+    }
+
     public async Task UpdateReservationAsync(Reservation reservation)
     {
         var tracked = _context.Reservations.Local
