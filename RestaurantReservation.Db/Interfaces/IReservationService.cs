@@ -5,6 +5,7 @@ public interface IReservationService
 {
     Task<Reservation> GetReservationByIdAsync(int reservationId);
     Task<List<Reservation>> GetReservationsAsync();
+    Task<List<Reservation>> GetReservationsByCustomerAsync(int customerId);
     Task AddReservationAsync(DateTime reservationDate, int partySize, int restaurantId, int customerId, int tableId);
     Task DeleteReservationAsync(int reservationId);
     Task UpdateReservationDateAsync(int reservationId, DateTime reservationDate);
