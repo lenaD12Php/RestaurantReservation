@@ -10,4 +10,5 @@ public interface IOrderRepository
     Task AddOrderAsync(Order order);
     Task DeleteOrderAsync(Order order);
     Task UpdateOrderAsync(Order order);
+    Task<decimal> CalculateAverageOrderAmountAsync(int employeeId);
 }

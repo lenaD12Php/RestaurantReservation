@@ -13,4 +13,5 @@ public interface IOrderService
     Task UpdateOrderTotalAmountAsync(int orderId, decimal totalAmount);
     Task UpdateOrderReservationAsync(int orderId, int reservationId);
     Task UpdateOrderEmployeeAsync(int orderId, int employeeId);
+    Task<decimal> CalculateAverageOrderAmountAsync(int employeeId);
 }
