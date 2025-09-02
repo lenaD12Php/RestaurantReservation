@@ -36,6 +36,12 @@ public class MenuItemRepository : IMenuItemRepository
             .FirstOrDefaultAsync(mi => mi.MenuItemId == menuItemId);
     }
 
+    public async Task<List<MenuItem>> ListOrderedMenuItemsAsync(int reservationId)
+    {
+        return await _context.MenuItems.AsNoTracking()
+            .Where(mi => mi.OrderItems.Any(oi => oi.Order.ReservationId == reservationId)).ToListAsync();
+    }
+
     public async Task UpdateMenuItemAsync(MenuItem menuItem)
     {
         var tracked = _context.MenuItems.Local
