@@ -59,4 +59,10 @@ public class OrderRepository : IOrderRepository
         _context.Entry(order).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }
+
+    public async Task<decimal> CalculateAverageOrderAmountAsync(int employeeId)
+    {
+        return await _context.Orders.AsNoTracking().Where(o=> o.EmployeeId == employeeId)
+            .AverageAsync(o => o.TotalAmount);
+    }
 }
