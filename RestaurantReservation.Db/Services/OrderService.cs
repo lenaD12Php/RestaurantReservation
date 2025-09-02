@@ -76,4 +76,9 @@ public class OrderService : IOrderService
 
         await _repository.UpdateOrderAsync(order);
     }
+
+    public async Task<decimal> CalculateAverageOrderAmountAsync(int employeeId)
+    {
+        return await _repository.CalculateAverageOrderAmountAsync(employeeId);
+    }
 }
