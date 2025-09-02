@@ -1,4 +1,5 @@
-﻿using RestaurantReservation.Db.Interfaces;
+﻿using RestaurantReservation.Db.Entities;
+using RestaurantReservation.Db.Interfaces;
 
 namespace RestaurantReservation.ConsoleUIs;
 
@@ -13,7 +14,7 @@ public class MenuItemConsoleUI
         {
             Console.WriteLine("\n1) Add MenuItem  \n2) Update Name  \n3) Update Descrioption  " +
                 "\n4) Update Price  \n5) Update Restaurant  \n6) Delete MenuItem  " +
-                "\n7) Get MenuItem  \n8) Get MenuItems  \n0) Exit");
+                "\n7) Get MenuItem  \n8) Get MenuItems  \n9) List Ordered MenuItems By Reservation  \n0) Exit");
             var input = Console.ReadLine();
             switch (input)
             {
@@ -40,6 +41,9 @@ public class MenuItemConsoleUI
                     break;
                 case "8": 
                     await GetMenuItemsUI(); 
+                    break;
+                case "9":
+                    await ListOrderedMenuItemsByReservationUI();
                     break;
                 case "0": 
                     return;
@@ -68,7 +72,12 @@ public class MenuItemConsoleUI
         return int.TryParse(Console.ReadLine(), out var restaurantId) ? restaurantId : throw new ArgumentException("Invalid restaurantId.");
     }
 
-    
+    private static int ReadReservationIdOrFail()
+    {
+        Console.Write("ReservationId: ");
+        return int.TryParse(Console.ReadLine(), out var reservationId) ? reservationId : throw new ArgumentException("Invalid reservationId.");
+    }
+
     public async Task AddMenuItemUI()
     {
         Console.WriteLine("Name: ");
@@ -190,6 +199,21 @@ public class MenuItemConsoleUI
             Console.WriteLine($"MenuItem Id: {menuItem.MenuItemId},\n   Name: {menuItem.Name}," +
             $"\n    Description: {menuItem.Description},\n    Price: {menuItem.Price}, " +
             $"\n    RestaurantId: {menuItem.RestaurantId}");
+        }
+    }
+
+    public async Task ListOrderedMenuItemsByReservationUI()
+    {
+        var reservationId = ReadReservationIdOrFail();
+        var menuItemsOrdered = await _service.ListOrderedMenuItemsAsync(reservationId);
+
+        foreach (var menuItem in menuItemsOrdered)
+        {
+           menuItem.OrderItems.ForEach(oi => Console.WriteLine($"ReservationId:    {oi.Order.ReservationId}"));
+           Console.WriteLine($"MenuItem Id: {menuItem.MenuItemId},\n   Name: {menuItem.Name}," +
+           $"\n    Description: {menuItem.Description},\n    Price: {menuItem.Price}, " +
+           $"\n    RestaurantId: {menuItem.RestaurantId}");
+           
         }
     }
 }
