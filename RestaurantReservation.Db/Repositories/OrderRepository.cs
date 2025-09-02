@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using RestaurantReservation.Db.Entities;
 using RestaurantReservation.Db.Interfaces;
 
@@ -34,6 +35,17 @@ public class OrderRepository : IOrderRepository
     {
         return await _context.Orders.AsNoTracking().Include(o => o.OrderItems)
            .ToListAsync();
+    }
+
+    public async Task<List<Order>> ListOrdersAndMenuItemsAsync(int reservationId)
+    {
+        return await _context.Orders
+            .Where(o => o.ReservationId == reservationId)
+            .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.MenuItem)
+            .AsNoTracking()
+            .OrderBy(o => o.OrderDate)
+            .ToListAsync();
     }
 
     public async Task UpdateOrderAsync(Order order)
