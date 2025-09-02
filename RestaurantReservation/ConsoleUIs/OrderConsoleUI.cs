@@ -14,8 +14,8 @@ public class OrderConsoleUI
         {
             Console.WriteLine("\n1) Add Order  \n2) Update OrderDate  \n3) Update TotalAmount  " +
                 "\n4) Update Reservation  \n5) Update Employee  \n6) Delete Order  " +
-                "\n7) Get Order  \n8) Get Orders  \n9) List Orders And MenuItems By Reservation   " +
-                "\n0) Exit");
+                "\n7) Get Order  \n8) Get Orders  \n9) List Orders And MenuItems By Reservation     " +
+                "\n10) Calculate Average Order Amount by Employe \n0) Exit");
             var input = Console.ReadLine();
             switch (input)
             {
@@ -45,6 +45,9 @@ public class OrderConsoleUI
                     break;
                 case "9":
                     await ListOrdersAndMenuItemsByReservationUI();
+                    break;
+                case "10":
+                    await CalculateAverageOrderAmountByEmployeeUI();
                     break;
                 case "0":
                     return;
@@ -227,6 +230,15 @@ public class OrderConsoleUI
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
+    }
+
+    public async Task CalculateAverageOrderAmountByEmployeeUI()
+    {
+        var employeeId = ReadEmployeeIdOrFail();
+
+        var orderAverage =await _service.CalculateAverageOrderAmountAsync(employeeId);
+
+        Console.WriteLine($"EmployeeId:  {employeeId},  \nAverage Order Amount: {orderAverage}");
     }
 }
 
