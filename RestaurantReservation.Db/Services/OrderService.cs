@@ -40,6 +40,11 @@ public class OrderService : IOrderService
         return await _repository.GetOrdersAsync();
     }
 
+    public async Task<List<Order>> ListOrdersAndMenuItemsAsync(int reservationId)
+    {
+        return await _repository.ListOrdersAndMenuItemsAsync(reservationId);
+    }
+
     public async Task UpdateOrderEmployeeAsync(int orderId, int employeeId)
     {
         var order = await GetOrderByIdAsync(orderId);
