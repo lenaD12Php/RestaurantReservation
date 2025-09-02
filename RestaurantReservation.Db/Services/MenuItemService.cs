@@ -1,4 +1,5 @@
-﻿using RestaurantReservation.Db.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using RestaurantReservation.Db.Entities;
 using RestaurantReservation.Db.Interfaces;
 
 namespace RestaurantReservation.Db.Services;
@@ -38,6 +39,11 @@ public class MenuItemService : IMenuItemService
     public async Task<MenuItem> GetMenuItemByIdAsync(int menuItemId)
     {
         return await _repository.GetMenuItemByIdAsync(menuItemId);
+    }
+
+    public async Task<List<MenuItem>> ListOrderedMenuItemsAsync(int reservationId)
+    {
+        return await _repository.ListOrderedMenuItemsAsync(reservationId);
     }
 
     public async Task UpdateMenuItemDescriptionAsync(int menuItemId, string description)
