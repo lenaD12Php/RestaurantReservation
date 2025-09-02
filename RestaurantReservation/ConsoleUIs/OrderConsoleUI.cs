@@ -14,7 +14,8 @@ public class OrderConsoleUI
         {
             Console.WriteLine("\n1) Add Order  \n2) Update OrderDate  \n3) Update TotalAmount  " +
                 "\n4) Update Reservation  \n5) Update Employee  \n6) Delete Order  " +
-                "\n7) Get Order  \n8) Get Orders  \n0) Exit");
+                "\n7) Get Order  \n8) Get Orders  \n9) List Orders And MenuItems By Reservation   " +
+                "\n0) Exit");
             var input = Console.ReadLine();
             switch (input)
             {
@@ -41,6 +42,9 @@ public class OrderConsoleUI
                     break;
                 case "8":
                     await GetOrdersUI();
+                    break;
+                case "9":
+                    await ListOrdersAndMenuItemsByReservationUI();
                     break;
                 case "0":
                     return;
@@ -198,6 +202,30 @@ public class OrderConsoleUI
             Console.WriteLine($"OrderId: {order.OrderId},\n   OrderDate: {order.OrderDate}," +
             $"\n    TotalAmount: {order.TotalAmount},\n    ReservationId: {order.ReservationId}, " +
             $"\n    EmployeeId: {order.EmployeeId}");
+        }
+    }
+
+    public async Task ListOrdersAndMenuItemsByReservationUI()
+    {
+        try
+        {
+            var reservationId = ReadReservationIdOrFail();
+
+            var orders = await _service.ListOrdersAndMenuItemsAsync(reservationId);
+
+            foreach (var order in orders)
+            {
+                Console.WriteLine($"OrderId: {order.OrderId},\n    OrderDate: {order.OrderDate}," +
+                $"\n    TotalAmount: {order.TotalAmount},\n    ReservationId: {order.ReservationId}, " +
+                $"\n    EmployeeId: {order.EmployeeId}");
+                order.OrderItems.ForEach(oi => Console.WriteLine($"MenuItemId:  {oi.MenuItemId}," +
+                    $"\n    Name: {oi.MenuItem.Name},\n    Description: {oi.MenuItem.Description}" +
+                    $",\n    Price: {oi.MenuItem.Price},\n    RestaurantId: {oi.MenuItem.RestaurantId}"));
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
         }
     }
 }
