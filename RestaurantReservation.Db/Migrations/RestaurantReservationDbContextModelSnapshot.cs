@@ -32,8 +32,7 @@ namespace RestaurantReservation.Db.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"));
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Firstname")
                         .IsRequired()
@@ -51,6 +50,10 @@ namespace RestaurantReservation.Db.Migrations
                         .HasColumnName("phone_number");
 
                     b.HasKey("CustomerId");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
 
                     b.ToTable("Customers");
 
@@ -95,6 +98,62 @@ namespace RestaurantReservation.Db.Migrations
                             Lastname = "Jaradat",
                             PhoneNumber = "1267867890"
                         });
+                });
+
+            modelBuilder.Entity("RestaurantReservation.Db.Entities.CustomerAndRestaurantByReservation", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int")
+                        .HasColumnName("customer_id");
+
+                    b.Property<string>("CustomerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("customer_name");
+
+                    b.Property<string>("CustomerPhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("customer_phone");
+
+                    b.Property<int>("PartySize")
+                        .HasColumnType("int")
+                        .HasColumnName("party_size");
+
+                    b.Property<DateTime>("ReservationDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("reservation_date");
+
+                    b.Property<int>("ReservationId")
+                        .HasColumnType("int")
+                        .HasColumnName("employee_id");
+
+                    b.Property<string>("RestaurantAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("restaurant_address");
+
+                    b.Property<int>("RestaurantId")
+                        .HasColumnType("int")
+                        .HasColumnName("restaurant_id");
+
+                    b.Property<string>("RestaurantName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("restaurant_name");
+
+                    b.Property<string>("RestaurantPhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("restaurant_phone");
+
+                    b.Property<int>("TableId")
+                        .HasColumnType("int")
+                        .HasColumnName("table_id");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("CustomerAndRestaurantByReservation", (string)null);
                 });
 
             modelBuilder.Entity("RestaurantReservation.Db.Entities.Employee", b =>
@@ -171,6 +230,51 @@ namespace RestaurantReservation.Db.Migrations
                             Position = "Chef",
                             RestaurantId = 5
                         });
+                });
+
+            modelBuilder.Entity("RestaurantReservation.Db.Entities.EmployeesWithRestaurantDetails", b =>
+                {
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int")
+                        .HasColumnName("employee_id");
+
+                    b.Property<string>("EmployeeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("employee_name");
+
+                    b.Property<string>("EmployeePosition")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("employee_position");
+
+                    b.Property<string>("RestauranrtOpeningHours")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("restaurant_opening_hours");
+
+                    b.Property<string>("RestaurantAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("restaurant_address");
+
+                    b.Property<int>("RestaurantId")
+                        .HasColumnType("int")
+                        .HasColumnName("restaurant_id");
+
+                    b.Property<string>("RestaurantName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("restaurant_name");
+
+                    b.Property<string>("RestaurantPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("restaurant_phone");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("EmployeesWithRestaurantDetails", (string)null);
                 });
 
             modelBuilder.Entity("RestaurantReservation.Db.Entities.MenuItem", b =>
@@ -342,15 +446,16 @@ namespace RestaurantReservation.Db.Migrations
                     b.Property<int>("Quantity")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValueSql("0");
+                        .HasDefaultValue(0);
 
                     b.HasKey("OrderItemId");
 
                     b.HasIndex("MenuItemId");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderId", "MenuItemId")
+                        .IsUnique();
 
-                    b.ToTable("OrderItem");
+                    b.ToTable("OrderItems", (string)null);
 
                     b.HasData(
                         new
@@ -649,17 +754,21 @@ namespace RestaurantReservation.Db.Migrations
 
             modelBuilder.Entity("RestaurantReservation.Db.Entities.OrderItem", b =>
                 {
-                    b.HasOne("RestaurantReservation.Db.Entities.MenuItem", null)
-                        .WithMany()
+                    b.HasOne("RestaurantReservation.Db.Entities.MenuItem", "MenuItem")
+                        .WithMany("OrderItems")
                         .HasForeignKey("MenuItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RestaurantReservation.Db.Entities.Order", null)
-                        .WithMany()
+                    b.HasOne("RestaurantReservation.Db.Entities.Order", "Order")
+                        .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("MenuItem");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("RestaurantReservation.Db.Entities.Reservation", b =>
@@ -708,6 +817,16 @@ namespace RestaurantReservation.Db.Migrations
             modelBuilder.Entity("RestaurantReservation.Db.Entities.Employee", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("RestaurantReservation.Db.Entities.MenuItem", b =>
+                {
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("RestaurantReservation.Db.Entities.Order", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("RestaurantReservation.Db.Entities.Reservation", b =>
