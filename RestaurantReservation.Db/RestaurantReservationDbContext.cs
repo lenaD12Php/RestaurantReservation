@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using RestaurantReservation.Db.Entities;
 using RestaurantReservation.Db.Enums;
 
@@ -14,6 +15,8 @@ public class RestaurantReservationDbContext : DbContext
     public DbSet<Reservation> Reservations { get; set; }
     public DbSet<Restaurant> Restaurants { get; set; }
     public DbSet<Table> Tables { get; set; }
+    public DbSet<CustomerAndRestaurantByReservation> ReservationsWithCustomerAndRestaurantDetails { get; set; }
+    public DbSet<EmployeesWithRestaurantDetails> EmployeesWithRestaurantDetails { get; set; }
 
     public RestaurantReservationDbContext() { }
     public RestaurantReservationDbContext(DbContextOptions<RestaurantReservationDbContext> options): base(options)
@@ -22,10 +25,48 @@ public class RestaurantReservationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB; Database =  RestaurantReservationCore; Integrated Security=True;");
+        optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB; Database =  RestaurantReservationCore; Integrated Security=True;")
+             .EnableSensitiveDataLogging() // dev only
+    .LogTo(Console.WriteLine, LogLevel.Information);
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<EmployeesWithRestaurantDetails>(ewd =>
+        {
+            ewd.HasNoKey();
+            ewd.ToView("EmployeesWithRestaurantDetails");
+
+            ewd.Property(ewd => ewd.EmployeeId).HasColumnName("employee_id");
+            ewd.Property(ewd => ewd.EmployeeName).HasColumnName("employee_name");
+            ewd.Property(ewd => ewd.EmployeePosition).HasColumnName("employee_position");
+            ewd.Property(ewd => ewd.RestaurantId).HasColumnName("restaurant_id");
+            ewd.Property(ewd => ewd.RestaurantName).HasColumnName("restaurant_name");
+            ewd.Property(ewd => ewd.RestaurantAddress).HasColumnName("restaurant_address");
+            ewd.Property(ewd => ewd.RestaurantPhone).HasColumnName("restaurant_phone");
+            ewd.Property(ewd => ewd.RestauranrtOpeningHours).HasColumnName("restaurant_opening_hours");
+        }
+        );
+
+        modelBuilder.Entity<CustomerAndRestaurantByReservation>(rwd =>
+        {
+            rwd.HasNoKey();
+
+            rwd.ToView("CustomerAndRestaurantByReservation");
+
+            rwd.Property(rwd => rwd.ReservationId).HasColumnName("employee_id");
+            rwd.Property(rwd => rwd.RestaurantId).HasColumnName("restaurant_id");
+            rwd.Property(rwd => rwd.RestaurantName).HasColumnName("restaurant_name");
+            rwd.Property(rwd => rwd.RestaurantAddress).HasColumnName("restaurant_address");
+            rwd.Property(rwd => rwd.RestaurantPhoneNumber).HasColumnName("restaurant_phone");
+            rwd.Property(rwd => rwd.ReservationDate).HasColumnName("reservation_date");
+            rwd.Property(rwd => rwd.TableId).HasColumnName("table_id");
+            rwd.Property(rwd => rwd.PartySize).HasColumnName("party_size");
+            rwd.Property(rwd => rwd.CustomerId).HasColumnName("customer_id");
+            rwd.Property(rwd => rwd.CustomerName).HasColumnName("customer_name");
+            rwd.Property(rwd => rwd.CustomerPhoneNumber).HasColumnName("customer_phone");
+        }
+        );
+
         modelBuilder.Entity<OrderItem>(oi =>
         {
             oi.ToTable("OrderItems");
