@@ -12,5 +12,6 @@ public interface IRestaurantService
     Task UpdateRestaurantAddressAsync(int restaurantId, string address);
     Task UpdateRestaurantPhoneNumberAsync(int restaurantId, string phoneNumber);
     Task UpdateRestaurantOpeningHoursAsync(int restaurantId, string openingHours);
+    Task<decimal> GetTotalRevenueForRestaurantAsync(int restaurantId);
 }
 

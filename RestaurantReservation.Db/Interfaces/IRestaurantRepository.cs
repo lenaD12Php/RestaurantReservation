@@ -9,4 +9,5 @@ public interface IRestaurantRepository
     Task AddRestaurantAsync(Restaurant restaurant);
     Task DeleteRestaurantAsync(Restaurant restaurant);
     Task UpdateRestaurantAsync(Restaurant restaurant);
+    Task<decimal> GetTotalRevenueForRestaurantAsync(int restaurantId);
 }

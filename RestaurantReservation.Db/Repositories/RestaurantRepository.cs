@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using RestaurantReservation.Db.Entities;
 using RestaurantReservation.Db.Interfaces;
 
@@ -48,5 +49,17 @@ public class RestaurantRepository : IRestaurantRepository
         _context.Attach(restaurant);
         _context.Entry(restaurant).State = EntityState.Modified;
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<decimal> GetTotalRevenueForRestaurantAsync(int restaurantId)
+    {
+        var sql = "SELECT dbo.fn_TotalRevenueForRestaurant(@restaurantId) AS Value";
+
+        var total = await _context.Database.SqlQueryRaw<decimal>(
+            sql,
+            new SqlParameter("@restaurantId", restaurantId)
+        ).FirstAsync();
+
+        return total;
     }
 }

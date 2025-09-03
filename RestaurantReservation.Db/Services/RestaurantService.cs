@@ -70,4 +70,9 @@ public class RestaurantService : IRestaurantService
 
         await _repository.UpdateRestaurantAsync(restaurant);
     }
+
+    public async Task<decimal> GetTotalRevenueForRestaurantAsync(int restaurantId)
+    {
+        return await _repository.GetTotalRevenueForRestaurantAsync(restaurantId);
+    }
 }
