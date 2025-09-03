@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace RestaurantReservation.Db.Enums;
 
-namespace RestaurantReservation.Db.Enums
+public enum Capacity
 {
-    internal class Capacity
-    {
-    }
+    Two = 2,
+    Four = 4,
+    Six = 6
 }
