@@ -12,5 +12,6 @@ public interface ICustomerService
     Task UpdateCustomerPhoneNumberAsync(int customerId, string phoneNumber);
     Task<Customer> GetCustomerByIdAsync(int customerId);
     Task<List<Customer>> GetCustomersAsync();
+    Task<List<Customer>> GetCustomersWithReservationPartySizeAsync(int partySize);
     Task DeleteCustomerAsync(int customerId);
 }

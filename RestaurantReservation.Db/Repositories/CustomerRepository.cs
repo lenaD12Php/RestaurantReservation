@@ -26,6 +26,11 @@ public class CustomerRepository : ICustomerRepository
         return await _context.Customers.AsNoTracking().Include(c=>c.Reservations).ToListAsync();
     }
 
+    public async Task<List<Customer>> GetCustomersWithReservationPartySizeAsync(int partySize)
+    {
+        return await _context.Customers.FromSqlRaw("CustomerWithGreaterPartySize {0}", partySize).AsNoTracking().ToListAsync(); 
+    }
+
     public async Task UpdateCustomerAsync(Customer customer)
     {
         var tracked = _context.Customers.Local

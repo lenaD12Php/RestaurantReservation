@@ -8,6 +8,7 @@ public interface ICustomerRepository
     Task AddCustomerAsync(Customer customer);
     Task<Customer?> GetCustomerByIdAsync(int customerId);
     Task<List<Customer>> GetCustomersAsync();
+    Task<List<Customer>> GetCustomersWithReservationPartySizeAsync(int partySize);
     Task UpdateCustomerAsync(Customer customer);
     Task DeleteCustomerAsync(Customer customer);
 }

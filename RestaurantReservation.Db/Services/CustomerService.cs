@@ -1,4 +1,5 @@
-﻿using RestaurantReservation.Db.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using RestaurantReservation.Db.Entities;
 using RestaurantReservation.Db.Interfaces;
 using RestaurantReservation.Db.Validators;
 
@@ -84,6 +85,11 @@ public class CustomerService : ICustomerService
     public async Task<List<Customer>> GetCustomersAsync()
     {
         return await _repository.GetCustomersAsync();
+    }
+
+    public async Task<List<Customer>> GetCustomersWithReservationPartySizeAsync(int partySize)
+    {
+        return await _repository.GetCustomersWithReservationPartySizeAsync(partySize);
     }
 }
 
