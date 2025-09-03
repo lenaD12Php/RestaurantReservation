@@ -22,6 +22,8 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<IReservationRepository, ReservationRepository>();
         services.AddScoped<IRestaurantRepository, RestaurantRepository>();
         services.AddScoped<ITableRepository, TableRepository>();
+        services.AddScoped<IReservationWithDetailsRepository, ReservationWithDetailsRepository>();
+        services.AddScoped<IEmployeesWithRestaurantDetailsRepository, EmployeesWithRestaurantDetailsRepository>();
 
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IEmployeeService, EmployeeService>();
@@ -31,6 +33,8 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<IReservationService, ReservationService>();
         services.AddScoped<IRestaurantService, RestaurantService>();
         services.AddScoped<ITableService, TableService>();
+        services.AddScoped<IReservationWithDetailsService, ReservationWithDetailsService>();
+        services.AddScoped<IEmployeesWithRestaurantDetailsService, EmployeesWithRestaurantDetailsService>();
 
         services.AddScoped<CustomerConsoleUI>();
         services.AddScoped<EmployeeConsoleUI>();
@@ -40,6 +44,8 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddScoped<ReservationConsoleUI>();
         services.AddScoped<RestaurantConsoleUI>();
         services.AddScoped<TableConsoleUI>();
+        services.AddScoped<ReservationWithDetailsConsoleUI>();
+        services.AddScoped<EmployeeWithDetailsConsoleUI>();
 
     })
     .Build();
@@ -59,6 +65,8 @@ while (true)
     Console.WriteLine("6) Reservation");
     Console.WriteLine("7) Restaurant");
     Console.WriteLine("8) Table");
+    Console.WriteLine("9) ReservationWithDetails");
+    Console.WriteLine("10) EmployeeWithDetails");
     Console.WriteLine("0) Exit");
 
     Console.Write("\nChoose: ");
@@ -89,6 +97,12 @@ while (true)
             break;
         case "8": 
             await sp.GetRequiredService<TableConsoleUI>().RunAsync(); 
+            break;
+        case "9":
+            await sp.GetRequiredService<ReservationWithDetailsConsoleUI>().RunAsync();
+            break;
+        case "10":
+            await sp.GetRequiredService<EmployeeWithDetailsConsoleUI>().RunAsync();
             break;
         case "0": 
             return;

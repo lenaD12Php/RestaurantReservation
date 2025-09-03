@@ -13,7 +13,7 @@ public class CustomerConsoleUI
         {
             Console.WriteLine("\n1) Add Customer  \n2) Update FirstName  " +
                 "\n3) Update LastName  \n4) Update Email  \n5) Update PhoneNumber  " +
-                "\n6) Delete Customer  \n7) Get Customer  \n8) Get Customers  \n0) Exit");
+                "\n6) Delete Customer  \n7) Get Customer  \n8) Get Customers  \n9) Get Customers With Reservation PartySize Async  \n0) Exit");
             var input = Console.ReadLine();
             switch (input)
             {
@@ -41,6 +41,9 @@ public class CustomerConsoleUI
                 case "8":
                     await GetCustomersUI(); 
                     break;
+                case "9":
+                    await GetCustomersWithReservationPartySizeUI();
+                    break;
                 case "0": 
                     return;
                 default: 
@@ -54,6 +57,12 @@ public class CustomerConsoleUI
     {
         Console.Write("CustomerId: ");
         return int.TryParse(Console.ReadLine(), out var id) ? id : throw new ArgumentException("Invalid id.");
+    }
+
+    private static int ReadPartySizeOrFail()
+    {
+        Console.Write("PartySize: ");
+        return int.TryParse(Console.ReadLine(), out var partySize) ? partySize : throw new ArgumentException("Invalid PartySize.");
     }
 
     public async Task AddCustomerUI()
@@ -182,6 +191,18 @@ public class CustomerConsoleUI
             $"\n    LastName: {customer.Lastname},\n    Email: {customer.Email}, " +
             $"\n    PhoneNumber: {customer.PhoneNumber}");
             customer.Reservations.ForEach(r => Console.WriteLine($"    Reservation date: {r.ReservationDate}"));
+        }
+    }
+
+    public async Task GetCustomersWithReservationPartySizeUI()
+    {
+        var partySize = ReadPartySizeOrFail();
+        var customers = await _service.GetCustomersWithReservationPartySizeAsync(partySize);
+        foreach (var customer in customers)
+        {
+            Console.WriteLine($"Customer Id: {customer.CustomerId},\n   FirstName: {customer.Firstname}," +
+            $"\n    LastName: {customer.Lastname},\n    Email: {customer.Email}, " +
+            $"\n    PhoneNumber: {customer.PhoneNumber}");
         }
     }
 }

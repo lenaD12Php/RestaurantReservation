@@ -14,7 +14,7 @@ public class RestaurantConsoleUI
         {
             Console.WriteLine("\n1) Add Restaurant  \n2) Update Name  \n3) Update Address  " +
                 "\n4) Update OpeningHours  \n5) Update PhoneNumber  \n6) Delete Restaurant  " +
-                "\n7) Get Restaurant  \n8) Get Restaurants  0) Exit");
+                "\n7) Get Restaurant  \n8) Get restaurants  \n9) Get Total Restaurant Revenue   \n0) Exit");
             var input = Console.ReadLine();
             switch (input)
             {
@@ -42,6 +42,9 @@ public class RestaurantConsoleUI
                 case "8":
                     await GetRestaurantsUI();
                     break;
+                case "9":
+                    await GetTotalRestaurantRevenueUI();
+                    break;
                 case "0":
                     return;
                 default:
@@ -53,7 +56,7 @@ public class RestaurantConsoleUI
 
     private static int ReadIdOrFail()
     {
-        Console.Write("CustomerId: ");
+        Console.Write("RestaurantId: ");
         return int.TryParse(Console.ReadLine(), out var id) ? id : throw new ArgumentException("Invalid id.");
     }
 
@@ -179,8 +182,8 @@ public class RestaurantConsoleUI
 
     public async Task GetRestaurantsUI()
     {
-        var Restaurants = await _service.GetRestaurantsAsync();
-        foreach (var restaurant in Restaurants)
+        var restaurants = await _service.GetRestaurantsAsync();
+        foreach (var restaurant in restaurants)
         {
             Console.WriteLine($"Restaurant Id: {restaurant.RestaurantId},\n   Name: {restaurant.Name}," +
             $"\n    Address: {restaurant.Address},\n    OpeningHours: {restaurant.OpeningHours}, " +
@@ -189,6 +192,14 @@ public class RestaurantConsoleUI
             restaurant.Employees.ForEach(e => Console.WriteLine($"    EmployeeId: {e.EmployeeId},\n    EmployeeName: {e.Firstname} {e.Lastname}," +
                 $"\n    Position: {e.Position}")); 
         }
+    }
+
+    public async Task GetTotalRestaurantRevenueUI()
+    {
+        var id = ReadIdOrFail();
+
+        var restaurant = await _service.GetTotalRevenueForRestaurantAsync(id);
+        Console.WriteLine($"Total revenue for restaurant {id}: {restaurant:C}");
     }
 }
 
